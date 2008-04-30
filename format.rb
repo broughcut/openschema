@@ -41,7 +41,7 @@ require 'erb'
 
   def kind(k)
     it = k.downcase
-    if it =~ /integer|numeric/
+    if it =~ /integer|numeric|percent/
       "integer"
     elsif it =~ /boo/
       "boolean"
