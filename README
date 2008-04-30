@@ -66,3 +66,21 @@ OPEN SCHEMA
   >>
 
   you could follow that up the whole xml tree (if you really wanted to...).
+
+
+ handling of database datatypes hase been improved since the example 
+ files were generated:
+
+    create_table :ota_amount_percent do |t|
+      t.string :currency_code, :limit => 3 
+      t.boolean :fees_inclusive
+      t.boolean :tax_inclusive
+      t.string :percent
+      t.integer :nmbr_of_nights
+      t.string :basis_type
+      t.decimal :amount, :precision => 10, :scale => 2
+      t.integer :decimal_places
+      t.integer :parent_id
+      t.timestamps
+    end
+ 
