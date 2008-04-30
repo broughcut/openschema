@@ -6,12 +6,12 @@ require 'format'
 
 class OpenSchema
 
-  attr_accessor :schema, :html, :xml, :root, :result
+  attr_accessor :schema, :status, :html, :xml, :root, :result
 
   def initialize(schema)
     @schema = schema.gsub(/OTA|_/){}
     get_files
-    parse
+    parse if @status != false
   end
 
 
@@ -30,8 +30,18 @@ class OpenSchema
       fetch(uri,"#{@schema}.xml")
     end
     file = File.read("ota_files/#{@schema}.html")
+    if file.empty?
+      puts "xdoc not found -- probably a ComplexType. Please download the html xdoc page for #{@schema} and save it as ota_files/#{@schema}.html"
+      @status = false
+      return
+    end
     @html = Hpricot(file)
     file = File.read("ota_files/#{@schema}.xml").gsub(/xs:/){}
+    if file.empty?
+      puts "xml not found. Please download the xsd file for #{@schema} and save it as ota_files/#{@schema}.xml"
+      @status = false
+      return
+    end
     @xml = Hpricot.XML(file)
   end
 
