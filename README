@@ -1,0 +1,68 @@
+OPEN SCHEMA
+-----------
+
+ requires rubygems and hpricot ('gem install hpricot')
+
+ edit init.rb specfiying the schema you require in this line:
+
+ package = OpenSchema.new("VehLocDetailsNotifRQ").result
+ 
+ eg "HotelDescriptiveContentRQ"
+
+ then run the script:
+
+ $ ruby init.rb
+
+ see output_files for the database migrations and relational models
+ (there are a few examples in there already).
+
+ Currently only have ruby on rails templates, but the template files 
+ located in templates/rails/ are easy to edit (as are the rails db
+ migration files (which includes each attribute's datatype and max 
+ length) -- you wouldn't want to create an SQL file off the bat as 
+ it's obviously necessary to completely rejigg the schema).
+
+ OTA Schema files are automatically downloaded as required and cached 
+ locally.
+
+ This is obviously not for generating final db schema, but it may be 
+ useful for nailing down attribute datatypes and saves on typing
+ during the design.
+
+ It does actually generate a workable schema out of the box, though 
+ obviously as it corresponds to the xml schema a great many tables and
+ relationships will be totally inappropriate for use in a database.
+
+ That said, once you've ran the migration to generate the tables and 
+ copied the models to the right folder in a rails app, it's possible to 
+ start experimenting straight away (with some totally random values in
+ the brief example below):
+
+  Loading development environment (Rails 2.0.2)
+  >> stays = OtaStayRequirements.new
+  => #<OtaStayRequirements id: nil, parent_id: nil, created_at: nil, updated_at: nil>
+  >> stay = stays.ota_stay_requirements.build
+  => #<OtaStayRequirement id: nil, sun: nil, mon: nil, min_los: nil, max_los: nil, tue: nil, stay_context: nil, thur: nil, sat: nil, weds: nil, fri: nil, parent_id: nil, created_at: nil, updated_at: nil>
+  >> stay.sun = true
+  => true
+  >> stay.max_los = 7
+  => 7
+  >> stay.save
+  => true
+  >> stay = stays.ota_stay_requirements.build
+  => #<OtaStayRequirement id: nil, sun: nil, mon: nil, min_los: nil, max_los: nil, tue: nil, stay_context: nil, thur: nil, sat: nil, weds: nil, fri: nil, parent_id: nil, created_at: nil, updated_at: nil>
+  >> stay.max_los = 4
+  => 4
+  >> stay.weds = true
+  => true
+  >> stay.save
+  => true
+  >> stays.save
+  => true
+  >> stays
+  => #<OtaStayRequirements id: 2, parent_id: nil, created_at: "2008-04-30 10:19:09", updated_at: "2008-04-30 10:19:09">
+>> stays.ota_stay_requirements
+  => [#<OtaStayRequirement id: 3, sun: 1, mon: nil, min_los: nil, max_los: 7, tue: nil, stay_context: nil, thur: nil, sat: nil, weds: nil, fri: nil, parent_id: 2, created_at: "2008-04-30 10:18:31", updated_at: "2008-04-30 10:19:09">, #<OtaStayRequirement id: 4, sun: nil, mon: nil, min_los: nil, max_los: 4, tue: nil, stay_context: nil, thur: nil, sat: nil, weds: 1, fri: nil, parent_id: 2, created_at: "2008-04-30 10:18:55", updated_at: "2008-04-30 10:19:09">]
+  >>
+
+  you could follow that up the whole xml tree (if you really wanted to...).
