@@ -23,19 +23,33 @@ require 'erb'
     migration.close
   end
 
-  def size(i)
-    i.split('to').last.to_i if i.include?("to")
+
+  def size(k,v)
+    if v.include?('to')
+      i = v.split('to').last.gsub(/\D/){}.to_i
+    else
+      i = v.gsub(/\D/){}.to_i
+    end
+    if k == "decimal"
+      i == 0 ? range = 10 : range = range
+      ":precision => #{range}, :scale => 2"
+    elsif i > 0
+      ":limit => #{i}"
+    end
   end
 
 
-  def kind(i)
-    if i =~ /boo|integer/
+  def kind(k)
+    it = k.downcase
+    if it =~ /integer|numeric/
       "integer"
-    elsif i =~ /money|percent/
-      "float"
-    elsif i =~ /date/
+    elsif it =~ /boo/
+      "boolean"
+    elsif it =~ /money/
+      "decimal"
+    elsif it =~ /date/
       "datetime"
-    elsif i =~ /duration/
+    elsif it =~ /duration/
       "interval"
     else
       "string"

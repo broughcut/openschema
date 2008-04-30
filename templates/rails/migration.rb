@@ -4,8 +4,11 @@ template = %q{
       <% @elements.each do |node| %>
       create_table :ota_<%= node[:node].underscore %> do |t|
         <% node[:attributes].each_pair do |k,v| %>
-        <% unless kind(v) == 'interval' %>
-        t.<%= kind(v) %> :<%= k.underscore %><% if size(v) %>, :limit => <%= size(v) %> <% end %>
+        <% kind = kind(v) %>
+        <% if kind != "interval" && kind != "decimal" %>
+        t.<%= kind %> :<%= k.underscore %><% if size(kind,v) %>, <%= size(kind,v) %> <% end %>
+        <% elsif kind == "decimal" %>
+        t.decimal :<%= k.underscore %>, <%= size(kind,v) %>
         <% end %>
         <% end %>
         t.integer :parent_id
